@@ -3,7 +3,7 @@ import tempfile
 
 import pytest
 
-from storage import storage_json
+from storage.storage_json import StorageJson
 
 
 class TestStorageJson:
@@ -12,7 +12,7 @@ class TestStorageJson:
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
             file_path = temp_file.name
 
-        storage = storagejson.StorageJson(file_path)
+        storage = StorageJson(file_path)
         yield storage
 
         if os.path.exists(file_path):
