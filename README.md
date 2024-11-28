@@ -16,8 +16,8 @@ You need an https://www.omdbapi.com/ API key to fetch movie details.
 1. **Clone the repository:**
 
     ```sh
-    git clone https://github.com/yourusername/your-repo-name.git
-    cd your-repo-name
+    git clone https://github.com/Zanges/MovieOopProject.git
+    cd MovieOopProject
     ```
 
 2. **Install the required packages:**
