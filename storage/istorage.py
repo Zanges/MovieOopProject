@@ -4,6 +4,15 @@ from abc import ABC, abstractmethod
 class IStorage(ABC):
     """ Interface for the storage module """
     @abstractmethod
+    def _save_movies_data(self, movies_data: dict[str, dict]) -> bool:
+        """
+        Save the movies data to the file
+
+        :param movies_data:
+        """
+        pass
+
+    @abstractmethod
     def list_movies(self) -> dict[str, dict]:
         """
         List all movies
@@ -12,7 +21,6 @@ class IStorage(ABC):
         """
         pass
 
-    @abstractmethod
     def add_movie(self, title: str, year: int, rating: float, poster: str) -> bool:
         """
         Add a movie to the database, if it does not already exist
@@ -24,9 +32,16 @@ class IStorage(ABC):
 
         :return: True if the movie was added, False if the movie already exists
         """
-        pass
+        movies_data = self.list_movies()
+        if title in movies_data:
+            return False
+        movies_data[title] = {
+            "year": year,
+            "rating": rating,
+            "poster": poster
+        }
+        return self._save_movies_data(movies_data)
 
-    @abstractmethod
     def delete_movie(self, title: str) -> bool:
         """
         Delete a movie from the database, if it exists
@@ -35,9 +50,13 @@ class IStorage(ABC):
 
         :return: True if the movie was deleted, False if the movie does not exist
         """
-        pass
+        movies_data = self.list_movies()
+        if title not in movies_data:
+            return False
 
-    @abstractmethod
+        del movies_data[title]
+        return self._save_movies_data(movies_data)
+
     def update_movie(self, title: str, rating: float) -> bool:
         """
         Update the rating of a movie, if it exists
@@ -47,4 +66,9 @@ class IStorage(ABC):
 
         :return: True if the movie was updated, False if the movie does not exist
         """
-        pass
+        movies_data = self.list_movies()
+        if title not in movies_data:
+            return False
+
+        movies_data[title]["rating"] = rating
+        return self._save_movies_data(movies_data)
