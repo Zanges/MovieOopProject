@@ -19,6 +19,8 @@ class StorageJson(IStorage):
         Save the movies data to the file
 
         :param movies_data: dict with movie names as keys and movie details as values
+
+        :return: True if the data was saved, False if an error occurred
         """
         try:
             with open(self.file_path, "w") as fileobj:
