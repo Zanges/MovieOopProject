@@ -1,4 +1,5 @@
 import math
+import os
 import random
 
 from storage.istorage import IStorage
@@ -21,8 +22,10 @@ class MovieApp:
         print("Exiting the program...")
         exit(0)
 
-    def __init__(self, storage: IStorage):
+    def __init__(self, storage: IStorage, app_name: str = "Movie App"):
         self.storage = storage
+        self.app_name = app_name
+
         self.commands = [ # !IMPORTANT! args have to be in the same order as the function arguments
             {
                 "function": self._command_graceful_exit,
@@ -246,8 +249,42 @@ class MovieApp:
 
     def _command_generate_website(self):
         """ Generate a website with all movies """
+        if not os.path.exists("./_static/index_template.html"):
+            print("The movie grid template file does not exist")
+            return
+
         movies = self.storage.list_movies()
-        pass # TODO: implement
+        movie_grid_content = ""
+        for movie_name, movie_data in movies.items():
+            movie_grid_content += (
+                f'<li>\n'
+                f'<div class="movie">\n'
+                f'<img class="movie-poster" src="{movie_data["poster"]}" alt="{movie_name} Poster">\n'
+                f'<div class="movie-title">{movie_name}</div>\n'
+                f'<div class="movie-year">{movie_data["year"]}</div>\n'
+                f'</div>\n'
+                f'</li>\n'
+            )
+
+        with open("./_static/index_template.html", "r") as fileobj:
+            movie_grid_template = fileobj.read()
+
+        new_html = (movie_grid_template
+                    .replace("__TEMPLATE_TITLE__", self.app_name)
+                    .replace("__TEMPLATE_MOVIE_GRID__", movie_grid_content)
+                    )
+
+        with open("./_static/index.html", "w") as fileobj:
+            fileobj.write(new_html)
+
+        print("Website generated successfully")
+        while True:
+            user_input = input("Do you want to open the website? (Y/n)")
+            if user_input == "" or user_input.lower() == "y":
+                os.system("start _static/index.html")
+                break
+            elif user_input.lower() == "n":
+                break
 
 
 def main():
