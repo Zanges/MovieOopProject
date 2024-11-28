@@ -262,6 +262,7 @@ class MovieApp:
                 f'<img class="movie-poster" src="{movie_data["poster"]}" alt="{movie_name} Poster">\n'
                 f'<div class="movie-title">{movie_name}</div>\n'
                 f'<div class="movie-year">{movie_data["year"]}</div>\n'
+                f'<div class="movie-rating">IMDb: {movie_data["rating"]}/10</div>\n'
                 f'</div>\n'
                 f'</li>\n'
             )
