@@ -4,6 +4,7 @@ import random
 from storage.istorage import IStorage
 from user_input import get_valid_arguments
 from storage.storage_json import StorageJson
+from omdbapi import get_movie_data, format_movie_data
 
 
 class MovieApp:
@@ -36,18 +37,18 @@ class MovieApp:
             {
                 "function": self._command_add_movie,
                 "description": "Add a new movie",
-                "args": ["Movie Name", "Release Date", "Rating"],
+                "args": ["Movie Name"],
             },
             {
                 "function": self._command_remove_movie,
                 "description": "Remove a movie",
                 "args": ["Movie Name"],
             },
-            {
-                "function": self._command_edit_movie,
-                "description": "Edit a movies rating",
-                "args": ["Movie Name", "New Rating"],
-            },
+            # {
+            #     "function": self._command_edit_movie,
+            #     "description": "Edit a movies rating",
+            #     "args": ["Movie Name", "New Rating"],
+            # },
             {
                 "function": self._command_list_movies,
                 "description": "List all movies",
@@ -112,9 +113,19 @@ class MovieApp:
         for i, command in enumerate(self.commands):
             print(f"[{i}] {command['description']}")
 
-    def _command_add_movie(self, movie_name: str, release_date: int, rating: float) -> None:
+    def _command_add_movie(self, movie_name: str) -> None:
         """ Add a new movie """
-        self.storage.add_movie(movie_name, release_date, rating, "") # TODO: add correct poster
+        try:
+            api_movie_data = get_movie_data(movie_name)
+        except Exception as e:
+            print(f"Could not get the movie data: {e}")
+            return
+        success, movie_data = format_movie_data(api_movie_data)
+        if not success:
+            print("Could not get the movie data for:", movie_name)
+            print("Please check the movie name and try again")
+            return
+        self.storage.add_movie(movie_data["title"], movie_data["year"], movie_data["rating"], movie_data["poster"])
 
     def _command_remove_movie(self, movie_name: str) -> None:
         """ Remove a movie """
