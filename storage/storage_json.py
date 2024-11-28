@@ -42,6 +42,8 @@ class StorageJson(IStorage):
         :return: dict with movie names as keys and movie details as values
         """
         try:
+            if os.path.getsize(self.file_path) == 0:  # Check if the file is empty
+                return {}
             with open(self.file_path, "r") as fileobj:
                 movies_data = json.load(fileobj)
         except FileNotFoundError:

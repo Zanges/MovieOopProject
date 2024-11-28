@@ -7,15 +7,6 @@ from storage.storage_json import StorageJson
 from storage.storage_csv import StorageCSV
 
 
-"""
-All tests are passing, but I get a debug message that's indicating that there's a problem loading the data from the files. Why does this occur?
-
-OUTPUT:
-```
-test_storage.py::TestStorageJson::test_list_movies_empty PASSED          [ 12%]An error occurred: Expecting value: line 1 column 1 (char 0)
-Returning empty data
-```
-"""
 class TestStorageJson:
     @pytest.fixture
     def storage(self):
